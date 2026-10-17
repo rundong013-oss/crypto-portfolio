@@ -43,7 +43,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function fetchJSON(url, headers = {}) {
   const res = await fetch(url, { headers });
   if (res.status === 429) {
-    await sleep(15000);
+    await sleep(30000);
     const retry = await fetch(url, { headers });
     if (!retry.ok) throw new Error(`HTTP ${retry.status} for ${url}`);
     return retry.json();
@@ -152,7 +152,7 @@ async function main() {
       try {
         console.log(`CoinGecko history ${ticker} (${id})`);
         merge(ticker, await cgHistory(id));
-        await sleep(2500); // public API: ~30 req/min
+        await sleep(6000); // public API: ~10 req/min free tier
       } catch (e) { errors.push(`${ticker} (${id}): ${e.message}`); console.error(e.message); }
     }
   }
