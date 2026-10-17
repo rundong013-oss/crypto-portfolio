@@ -1,0 +1,54 @@
+name: Update Prices
+
+on:
+  schedule:
+    # Tokens trade 24/7: hourly, every day. Equities are only refreshed inside US market hours by the script.
+    - cron: "15 * * * *"
+    # Daily backfill of closes (after US close + after UTC midnight for token daily closes)
+    - cron: "40 22 * * 1-5"
+    - cron: "20 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-prices
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Determine mode
+        id: mode
+        run: |
+          MIN=$(date -u +%M)
+          if [ "$MIN" = "15" ]; then
+            echo "flag=--intraday" >> "$GITHUB_OUTPUT"
+            echo "msg=intraday $(date -u +%Y-%m-%dT%H:%M)" >> "$GITHUB_OUTPUT"
+          else
+            echo "flag=" >> "$GITHUB_OUTPUT"
+            echo "msg=eod $(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch prices
+        env:
+          FMP_API_KEY: ${{ secrets.FMP_API_KEY }}
+          COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+        run: node scripts/fetch-prices.js ${{ steps.mode.outputs.flag }}
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/prices.json
+          git diff --staged --quiet || git commit -m "chore: update prices ${{ steps.mode.outputs.msg }}"
+          git pull --rebase
+          git push

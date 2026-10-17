@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>David's RWA Portfolio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@font-face{font-family:'B612 Mono';src:url('https://fonts.gstatic.com/s/b612mono/v14/kmK_Zq85QVWbN1eW6lJV1Q7YiOFDtA.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'B612 Mono';src:url('https://fonts.gstatic.com/s/b612mono/v14/kmKmZq85QVWbN1eW6lJdayv4os9Pv7JGSg.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+:root{
+  --bg:#121417; --card:#181B20; --ink:#C8CCD2; --muted:#5A6068; --hair:rgba(90,96,104,.4);
+  --port:rgb(79,124,255); --bench:#5A6068; --gain:#30D158; --loss:#FF453A; --pill:#20242A;
+  --accent:rgb(79,124,255); --accent-dim:rgba(79,124,255,.15);
+  --eq:rgb(79,124,255); --tok:rgb(191,109,21);
+  --mono:'B612 Mono','JetBrains Mono','SF Mono',monospace;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+::selection{background-color:var(--accent);color:#fff}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:0;overflow-x:hidden}
+.wrap{max-width:1080px;margin:0 auto;padding:60px 24px 80px;position:relative;z-index:1}
+:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+.muted{color:var(--muted);font-size:12px}
+.pos{color:var(--gain)} .neg{color:var(--loss)}
+
+.hero{margin-bottom:24px;position:relative}
+.hero-bg{font-size:clamp(40px,7vw,90px);font-weight:700;letter-spacing:-.04em;line-height:1;
+  text-transform:uppercase;color:transparent;font-family:var(--sans);-webkit-text-stroke:.6px #fff;
+  white-space:nowrap;pointer-events:none;display:flex;justify-content:center;gap:.3em;margin:8px 0}
+.hero-bg span{display:block}
+.eyebrow-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1}
+select{appearance:none;-webkit-appearance:none;font:inherit;font-size:11px;color:var(--ink);background:var(--pill);border:1px solid var(--muted);border-radius:0;
+  padding:5px 28px 5px 10px;cursor:pointer;font-family:var(--mono);
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 12px) 55%,calc(100% - 8px) 55%;background-size:4px 4px;background-repeat:no-repeat}
+select:hover{border-color:var(--accent)}
+.ctrls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--muted);padding:0}
+.seg button{font-family:var(--mono);font-size:11px;border:0;background:transparent;color:var(--muted);padding:4px 12px;cursor:pointer;transition:all .2s}
+.seg button:not(:last-child){border-right:1px solid var(--muted)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:600}
+.big-wrap{perspective:800px;perspective-origin:center center}
+.big{font-size:clamp(40px,8vw,72px);font-weight:700;letter-spacing:-.03em;line-height:1;margin:0;font-family:var(--sans);
+  -webkit-text-stroke:1.5px #fff;color:transparent;transform-style:preserve-3d;will-change:transform;transition:color .3s}
+.big.pos{-webkit-text-stroke-color:var(--gain)} .big.neg{-webkit-text-stroke-color:var(--loss)}
+.subline{font-size:12px;color:#fff;min-height:20px;font-family:var(--mono);text-align:center}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);margin:16px 0 0;gap:1px;background:var(--hair)}
+.metric{padding:8px 20px;background:var(--bg)}
+.metric .k{font-size:10px;color:#fff;text-transform:uppercase;letter-spacing:.1em;font-family:var(--sans);font-weight:600}
+.metric .v{font-size:22px;font-weight:600;letter-spacing:-.02em;margin-top:6px;font-family:var(--sans)}
+@media (max-width:720px){.metrics{grid-template-columns:repeat(2,1fr)}}
+
+.card{background:var(--card);border:1px solid var(--hair);padding:28px;margin-bottom:16px;position:relative;overflow:visible}
+.card::before,.card::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--accent);pointer-events:none}
+.card::before{top:-1px;left:-1px;border-top:1px solid;border-left:1px solid}
+.card::after{bottom:-1px;right:-1px;border-bottom:1px solid;border-right:1px solid}
+.card h2{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin:0;color:var(--accent);font-family:var(--sans)}
+.head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.legend{display:flex;gap:16px;font-size:11px;color:#fff;font-family:var(--mono)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.chart-main{position:relative;height:380px;margin-top:20px}
+.chart-sm{position:relative;height:130px;margin-top:16px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.card,.grid2>*{min-width:0}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}.chart-main{height:260px}.card{padding:20px}}
+.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);gap:6px}
+.empty strong{color:var(--ink);font-size:15px;font-weight:600;font-family:var(--sans)}
+
+.tbl{overflow-x:auto;overflow-y:visible;margin-top:14px}
+.scroll{max-height:380px;overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:10px 8px;text-align:left;white-space:nowrap;border-bottom:1px dashed var(--hair)}
+th:first-child,td:first-child{padding-left:0} th:last-child,td:last-child{padding-right:0}
+tr:last-child td{border-bottom:0}
+th{color:#fff;font-weight:600;font-size:10px;position:sticky;top:0;background:var(--card);text-transform:uppercase;letter-spacing:.08em;font-family:var(--sans)}
+td.num,th.num{text-align:right}
+td.wrapc{white-space:normal;min-width:160px;font-size:12px;color:#fff;line-height:1.5}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border:1px solid var(--accent);color:var(--accent);font-family:var(--sans);text-transform:uppercase;letter-spacing:.05em}
+.tag.tok{border-color:var(--tok);color:var(--tok)}
+.act-up{color:var(--gain);font-weight:500} .act-down{color:var(--loss);font-weight:500}
+.subh{font-size:11px;font-weight:600;margin:28px 0 0;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-family:var(--sans)}
+.subh:first-of-type{margin-top:20px}
+.subh.tok{color:var(--tok)}
+.journal{margin-top:16px}
+.journal-entry{padding:16px 0;border-bottom:1px dashed var(--hair)}
+.journal-entry:last-child{border-bottom:0}
+.journal-date{font-size:10px;color:var(--accent);font-family:var(--sans);font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.journal-body{font-size:13px;line-height:1.75;color:#fff;font-family:var(--mono)}
+.journal-body a{color:var(--accent)}
+
+.tip-wrap{position:relative;cursor:help;border-bottom:1px dashed var(--accent)}
+.tip-wrap .tip{display:none;position:fixed;width:min(460px,86vw);background:#181B20;border:1px solid var(--accent);padding:14px 16px;z-index:9999;
+  font-size:12px;line-height:1.65;color:#fff;font-family:var(--mono);white-space:normal;pointer-events:none;box-shadow:0 4px 24px rgba(0,0,0,.6)}
+.tip-wrap .tip-title{font-size:10px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-family:var(--sans);margin-bottom:8px}
+.tip-wrap:hover .tip{display:block}
+footer{color:var(--muted);font-size:11px;margin:40px auto 0;max-width:80ch;text-align:center;line-height:1.7;border-top:1px dashed var(--hair);padding-top:24px}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-bg" data-i-title><span>David's</span><span>RWA</span><span>Portfolio</span></div>
+    <div class="eyebrow-row">
+      <div class="big-wrap"><div class="big" id="sCum">–</div></div>
+      <div class="ctrls">
+        <div class="seg" role="group" aria-label="View"><button id="vAll" type="button" data-i="vAll"></button><button id="vEq" type="button" data-i="vEq"></button><button id="vTok" type="button" data-i="vTok"></button></div>
+        <div class="seg" role="group" aria-label="Language"><button id="lEn" type="button">EN</button><button id="lZh" type="button">中文</button></div>
+        <select id="startSel" aria-label="Start date"></select>
+      </div>
+    </div>
+    <div class="subline" id="subline"></div>
+    <div class="metrics" aria-label="Key metrics">
+      <div class="metric"><div class="k" id="sDayK"></div><div class="v" id="sDay">–</div></div>
+      <div class="metric"><div class="k" id="sExK"></div><div class="v" id="sEx">–</div></div>
+      <div class="metric"><div class="k" data-i="mdd"></div><div class="v" id="sDD">–</div></div>
+      <div class="metric"><div class="k" data-i="split"></div><div class="v" id="sSplit" style="font-size:18px">–</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2 data-i="cumTitle"></h2>
+      <div class="legend"><span><i style="background:var(--port)"></i><span id="legPort"></span></span><span><i style="background:var(--bench)"></i><span id="legBench"></span></span></div></div>
+    <div class="chart-main"><canvas id="cumChart" aria-label="Cumulative return chart"></canvas>
+      <div class="empty" id="emptyMain" style="display:none"><strong data-i="noData"></strong><span data-i="noDataSub"></span></div></div>
+    <div class="chart-sm"><canvas id="dayChart" aria-label="Daily returns chart"></canvas></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2 data-i="daily"></h2>
+      <div class="tbl scroll"><table id="dailyTbl"><thead><tr><th data-i="date"></th><th class="num" data-i="port"></th><th class="num" id="thBench"></th><th class="num" data-i="excess"></th><th class="num" data-i="cum"></th></tr></thead><tbody></tbody></table></div>
+    </section>
+    <section class="card">
+      <h2 data-i="attr"></h2>
+      <div style="position:relative;height:420px;margin-top:16px"><canvas id="attrChart" aria-label="Contribution chart"></canvas></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2 data-i="holdings"></h2>
+    <div id="holdingsWrap"></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i="activity"></h2>
+    <div class="tbl scroll"><table id="logTbl"><thead><tr><th data-i="date"></th><th data-i="ticker"></th><th data-i="action"></th><th class="num" data-i="change"></th><th data-i="note"></th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i="journal"></h2>
+    <div class="journal">
+      <div class="journal-entry">
+        <div class="journal-date">2026-10-08</div>
+        <div class="journal-body" data-j="1"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-i="footer"></footer>
+</div>
+
+<script>
+let P=null;            // portfolio.json
+let prices={}, log=[], startDate=null;
+let VIEW="all";        // all | equity | token
+let BASE_ASOF="2026-10-08";
+
+const $=id=>document.getElementById(id);
+const pct=(x,d=2)=>(x==null||isNaN(x))?"–":(x>=0?"+":"")+(x*100).toFixed(d)+"%";
+const pp=x=>(x*100).toFixed(1)+"%";
+const cls=x=>x==null?"":(x>=0?"pos":"neg");
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const I18N={
+ en:{vAll:"Combined",vEq:"Equity",vTok:"Token",mdd:"Max drawdown",split:"Equity / Token",cumTitle:"Cumulative return",port:"Portfolio",
+   noData:"No data yet",noDataSub:"The chart appears once prices are loaded.",daily:"Daily returns",date:"Date",excess:"Excess",cum:"Cumulative",
+   attr:"Contribution by holding",holdings:"Holdings",ticker:"Ticker",name:"Name",layer:"Layer",weight:"Weight",ret:"Since start",contrib:"Contribution",
+   activity:"Activity",action:"Action",change:"Change",note:"Note",lastDay:"Last day",vs:"vs",add:"Add",trim:"Trim",adj:"Adjust",
+   all:"All",init:"Initial",initBasket:"Initial baskets",dayRet:"Daily",contribTip:"Contribution",thesis:"Thesis",
+   eqBasket:"Equity basket",tokBasket:"Token basket",journal:"Journal",
+   j1:"Built from Citrini Research's Breaking The Wall (2026-10-08). The report's question is not whether real-world assets get tokenized but where the economics accrue. Two baskets, 50/50: six equities (transfer-agent layer, L2 operators, stablecoin issuer, credit registry) benchmarked against BITQ, and four tokens (perps, options, onchain credit, Base DEX) benchmarked against a 50:50 BTC/ETH index — the report explicitly does not expect the majors to lead this theme, so beating them is the test. Conviction-weighted: SECZ and COIN carry the equity side; LIT and DRV, both revenue-accruing with buybacks, carry the token side. Long only. Tokens trade 24/7, so the combined NAV moves on weekends while equities carry forward.",
+   sub:(b,n,l)=>`Since ${b} · ${n} days · data through ${l}`,
+   footer:"Method: two long-only baskets, each rebalanced daily to target weights; Combined = 50% equity basket + 50% token basket. Price returns in USD, no dividends or fees. Equities use US close; tokens use the last CoinGecko print before 00:00 UTC. On days a series has no print its last price is carried forward. Benchmarks: BITQ for equities, 50:50 BTC/ETH for tokens, the blend for Combined. Source: Citrini Research, Breaking The Wall (2026-10-08). For research only, not investment advice."},
+ zh:{vAll:"合并",vEq:"股票",vTok:"代币",mdd:"最大回撤",split:"股票 / 代币",cumTitle:"累计收益",port:"组合",
+   noData:"暂无数据",noDataSub:"写入价格后自动生成。",daily:"每日收益",date:"日期",excess:"超额",cum:"累计",
+   attr:"收益贡献",holdings:"当前持仓",ticker:"代码",name:"名称",layer:"所在层",weight:"仓位",ret:"区间涨跌",contrib:"区间贡献",
+   activity:"操作记录",action:"操作",change:"仓位变化",note:"备注",lastDay:"最近一日",vs:"相对",add:"加仓",trim:"减仓",adj:"调整",
+   all:"全部",init:"建仓",initBasket:"初始篮子",dayRet:"日收益",contribTip:"贡献",thesis:"投资逻辑",
+   eqBasket:"股票篮子",tokBasket:"代币篮子",journal:"日志",
+   j1:"基于 Citrini Research 的《Breaking The Wall》（2026-10-08）构建。报告的问题不是现实资产会不会代币化，而是经济利益归谁。两个篮子各占 50%：六只股票（过户代理层、L2 运营方、稳定币发行人、信贷登记）对标 BITQ；四个代币（永续合约、期权、链上信贷、Base 上的 DEX）对标 BTC/ETH 各半的指数——报告明确不押主流币领涨这个主题，所以跑赢它们就是检验。按信心加权：股票端由 SECZ 和 COIN 扛，代币端由 LIT 和 DRV 扛，两者都有收入回购。纯多头。代币 7×24 交易，合并净值周末也会动，股票按前值结转。",
+   sub:(b,n,l)=>`自 ${b} 以来，共 ${n} 天，数据截至 ${l}`,
+   footer:"口径：两个纯多头篮子，每日再平衡到目标仓位；合并 = 50% 股票篮子 + 50% 代币篮子。美元价格收益，不含分红与费用。股票取美股收盘价，代币取 CoinGecko 在 00:00 UTC 前的最后一笔。某序列当日无价格时按前值结转。基准：股票篮子对 BITQ，代币篮子对 BTC/ETH 各半，合并对两者的等权混合。来源：Citrini Research《Breaking The Wall》（2026-10-08）。仅供研究，不构成投资建议。"}
+};
+let LANG="en"; try{ const v=localStorage.getItem("lang"); if(v==="zh"||v==="en") LANG=v; }catch(e){}
+const T=k=>I18N[LANG][k];
+const L=o=>o?(o[LANG]||o.en||o.zh||""):"";
+
+/* ---------- weights for the current view ---------- */
+function bookAt(date){
+  // returns {ticker: weight-in-view}
+  const b={};
+  for(const k of ["equity","token"]){
+    const bw=VIEW==="all"?P.combined[k]:(VIEW===k?1:0);
+    if(!bw) continue;
+    const w=Object.assign({},P.baskets[k].w);
+    log.forEach(e=>{ if(e.date<=date && e.basket===k && e.ticker && e.to!=null) w[e.ticker]=e.to; });
+    for(const t in w) if(w[t]) b[t]=(b[t]||0)+w[t]*bw;
+  }
+  return b;
+}
+function benchSpec(){
+  const eq={[P.baskets.equity.bench.id]:1};
+  const tk=Object.assign({},P.baskets.token.bench.components);
+  if(VIEW==="equity") return {w:eq,label:P.baskets.equity.bench.label};
+  if(VIEW==="token")  return {w:tk,label:P.baskets.token.bench.label};
+  const w={}; for(const k in eq) w[k]=(w[k]||0)+eq[k]*P.combined.equity; for(const k in tk) w[k]=(w[k]||0)+tk[k]*P.combined.token;
+  return {w,label:`${P.baskets.equity.bench.label} + ${P.baskets.token.bench.label}`};
+}
+function allDates(){ const s=new Set(); Object.values(prices).forEach(m=>Object.keys(m).forEach(d=>s.add(d))); return [...s].sort(); }
+
+/* ---------- forward-filled price lookup ---------- */
+function ffill(ds){
+  const ff={};
+  for(const t in prices){ const m=prices[t]; let last=null; ff[t]=ds.map(d=>{ if(m[d]!=null) last=m[d]; return last; }); }
+  return ff;
+}
+
+function compute(){
+  const ds=allDates().filter(d=>!startDate||d>=startDate);
+  if(ds.length<2) return null;
+  const ff=ffill(ds);
+  const ret=(k,i)=>{ const a=ff[k]?.[i-1], b=ff[k]?.[i]; return (a&&b)?b/a-1:null; };
+  const rows=[], contrib={}, bench=benchSpec();
+  let nav=1,bnav=1,peak=1,mdd=0, eqNav=1, tkNav=1;
+  const hasB=Object.keys(bench.w).some(k=>prices[k]);
+  for(let i=1;i<ds.length;i++){
+    const book=bookAt(ds[i-1]); let r=0;
+    for(const k in book){ const x=ret(k,i); if(x!=null){ const c=book[k]*x; r+=c; contrib[k]=(contrib[k]||0)+c; } }
+    nav*=1+r; peak=Math.max(peak,nav); mdd=Math.min(mdd,nav/peak-1);
+    let br=null; if(hasB){ br=0; for(const k in bench.w){ const x=ret(k,i); if(x!=null) br+=bench.w[k]*x; } bnav*=1+br; }
+    // sub-basket navs (always full-basket, for the split metric)
+    for(const [k,obj] of [["equity",null],["token",null]]){
+      const w=P.baskets[k].w; let rr=0; for(const t in w){ const x=ret(t,i); if(x!=null) rr+=w[t]*x; }
+      if(k==="equity") eqNav*=1+rr; else tkNav*=1+rr;
+    }
+    rows.push({date:ds[i],r,br,cum:nav-1,bcum:hasB?bnav-1:null});
+  }
+  const first={}, last={}; for(const t in ff){ first[t]=ff[t].find(x=>x!=null)??null; last[t]=ff[t][ff[t].length-1]; }
+  const since={}; for(const t in ff) since[t]=(first[t]&&last[t])?last[t]/first[t]-1:null;
+  return {base:ds[0],rows,contrib,mdd,hasB,bench,since,eqCum:eqNav-1,tkCum:tkNav-1};
+}
+
+/* ---------- UI ---------- */
+function applyLang(){
+  document.documentElement.lang = LANG==="en"?"en":"zh-CN";
+  document.title = LANG==="en"?"David's RWA Portfolio":"David's RWA 组合";
+  document.querySelectorAll("[data-i]").forEach(el=>{ el.textContent=T(el.dataset.i); });
+  const ht=document.querySelector("[data-i-title]");
+  if(ht) ht.innerHTML=LANG==="en"?"<span>David's</span><span>RWA</span><span>Portfolio</span>":"<span>David's</span><span>RWA</span><span>组合</span>";
+  document.querySelectorAll("[data-j]").forEach(el=>{const txt=T("j"+el.dataset.j);if(txt)el.innerHTML=esc(txt).replace(/\n/g,"<br>");});
+  $("lEn").setAttribute("aria-pressed",LANG==="en"); $("lZh").setAttribute("aria-pressed",LANG==="zh");
+}
+function applyView(){ $("vAll").setAttribute("aria-pressed",VIEW==="all"); $("vEq").setAttribute("aria-pressed",VIEW==="equity"); $("vTok").setAttribute("aria-pressed",VIEW==="token");
+  document.documentElement.style.setProperty("--accent",VIEW==="token"?css("--tok"):css("--eq"));
+  document.documentElement.style.setProperty("--port",VIEW==="token"?css("--tok"):css("--eq")); }
+function setLang(l){ LANG=l; try{localStorage.setItem("lang",l);}catch(e){} applyLang(); render(); if(!allDates().length) renderStart(); }
+function setView(v){ VIEW=v; applyView(); if(cumChart){ cumChart.data.datasets[0].borderColor=css("--port"); } render(); }
+
+let cumChart,dayChart,attrChart;
+function makeCharts(){
+  Chart.defaults.font.family=css("--mono")||"monospace"; Chart.defaults.font.size=11; Chart.defaults.color='#ffffff'; Chart.defaults.borderColor=css("--hair");
+  const tip={backgroundColor:"rgba(24,27,32,.95)",borderColor:'rgba(255,255,255,.2)',borderWidth:1,padding:10,cornerRadius:0,displayColors:false,titleFont:{weight:"600",family:css("--mono")||"monospace"},bodyFont:{family:css("--mono")||"monospace"}};
+  const xs={grid:{display:false},border:{display:false},ticks:{maxTicksLimit:8,font:{family:css("--mono")||"monospace"}}};
+  const ys={grid:{color:'rgba(90,96,104,.25)',drawTicks:false},border:{display:false,dash:[4,4]},ticks:{callback:v=>(v*100).toFixed(1)+"%",maxTicksLimit:5,font:{family:css("--mono")||"monospace"}}};
+  const revealPlugin={id:'reveal',
+    beforeDraw(c){const p=c._revealP; if(p==null||p>=1) return; const {ctx,chartArea:a}=c; if(!a) return; ctx.save(); ctx.beginPath(); ctx.rect(a.left,a.top-10,(a.right-a.left)*p,a.bottom-a.top+20); ctx.clip();},
+    afterDraw(c){ if(c._revealP!=null&&c._revealP<1) c.ctx.restore(); }};
+  const cumFillBg=c=>{ const {ctx,chartArea}=c.chart; if(!chartArea) return "transparent"; const o=c.chart._fillOpacity||0;
+    const col=css("--port").match(/\d+/g)||[79,124,255]; const g=ctx.createLinearGradient(0,chartArea.top,0,chartArea.bottom);
+    g.addColorStop(0,`rgba(${col[0]},${col[1]},${col[2]},${0.2*o})`); g.addColorStop(1,`rgba(${col[0]},${col[1]},${col[2]},0)`); return g; };
+  cumChart=new Chart($("cumChart"),{type:"line",data:{labels:[],datasets:[
+    {label:T("port"),data:[],borderColor:css("--port"),borderWidth:2,pointRadius:0,pointHoverRadius:3,tension:.15,fill:"origin",backgroundColor:cumFillBg},
+    {label:"Bench",data:[],borderColor:css("--bench"),borderWidth:1,pointRadius:0,pointHoverRadius:3,tension:.15,borderDash:[4,4]}]},
+    plugins:[revealPlugin],
+    options:{responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:"index",intersect:false},
+      plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>`${c.dataset.label}  ${pct(c.parsed.y)}`}}},scales:{y:ys,x:xs}}});
+  dayChart=new Chart($("dayChart"),{type:"bar",data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:1,maxBarThickness:12}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,
+      plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>`${T("dayRet")}  ${pct(c.parsed.y)}`}}},
+      scales:{y:{...ys,ticks:{...ys.ticks,maxTicksLimit:3}},x:{...xs,ticks:{display:false}}}}});
+  attrChart=new Chart($("attrChart"),{type:"bar",data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:2,barPercentage:.7}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,animation:false,
+      plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:c=>`${T("contribTip")}  ${pct(c.parsed.x)}`}}},
+      scales:{x:{...ys},y:{grid:{display:false},border:{display:false},ticks:{autoSkip:false,font:{size:11,family:css("--mono")||"monospace"},color:css("--ink")}}}}});
+}
+
+function renderStart(){
+  const ds=allDates(), sel=$("startSel"); sel.innerHTML="";
+  if(ds.length<2){ sel.disabled=true; sel.innerHTML=`<option>${T("noData")}</option>`; startDate=null; return; }
+  sel.disabled=false;
+  ds.slice(0,-1).forEach(d=>{const o=document.createElement("option");o.value=o.textContent=d;sel.appendChild(o);});
+  const def=ds.includes(BASE_ASOF)?BASE_ASOF:ds[0];
+  if(!startDate||!ds.includes(startDate)) startDate=def;
+  sel.value=startDate;
+}
+
+function holdingRow(t,w,res){
+  const h=P.holdings[t]||{}; const th=L(h.thesis); const c=res?res.contrib[t]:null; const s=res?res.since[t]:null;
+  const nameTd=th?`<span class="tip-wrap">${esc(h.name||t)}<span class="tip"><div class="tip-title">${T("thesis")}</div>${esc(th)}</span></span>`:esc(h.name||t);
+  return `<tr><td><span class="tag${h.type==="token"?" tok":""}">${esc(t)}</span></td><td class="wrapc">${nameTd}</td><td class="wrapc">${esc(L(h.layer))}</td><td class="num">${pp(w)}</td><td class="num ${cls(s)}">${pct(s)}</td><td class="num ${cls(c)}">${pct(c)}</td></tr>`;
+}
+function render(){
+  if(!P) return;
+  const res=compute(); const R=res?res.rows:[];
+  const lastDate=R.length?R[R.length-1].date:(allDates().slice(-1)[0]||BASE_ASOF);
+  const cur=bookAt(lastDate);
+  const bench=benchSpec();
+  $("legPort").textContent=VIEW==="all"?T("port"):(VIEW==="equity"?T("eqBasket"):T("tokBasket"));
+  $("legBench").textContent=bench.label; $("thBench").textContent=bench.label; $("sExK").textContent=`${T("vs")} ${bench.label}`;
+  $("emptyMain").style.display=res?"none":(Object.keys(prices).length?"flex":"none");
+  const set=(id,v,t)=>{$(id).textContent=t??pct(v);$(id).className="v "+cls(v);};
+  if(res){
+    const last=R[R.length-1];
+    $("subline").textContent=T("sub")(res.base,R.length,last.date);
+    $("sCum").textContent=pct(last.cum); $("sCum").className="big "+cls(last.cum);
+    $("sDayK").textContent=`${T("lastDay")} ${last.date.slice(5)}`; set("sDay",last.r);
+    if(res.hasB) set("sEx",last.cum-last.bcum); else {$("sEx").textContent="–";$("sEx").className="v";}
+    set("sDD",res.mdd,res.mdd===0?"0.00%":pct(res.mdd));
+    $("sSplit").innerHTML=`<span class="${cls(res.eqCum)}">${pct(res.eqCum,1)}</span> / <span class="${cls(res.tkCum)}">${pct(res.tkCum,1)}</span>`; $("sSplit").className="v";
+  } else {
+    $("subline").textContent=""; $("sDayK").textContent=T("lastDay");
+    ["sDay","sEx","sDD","sSplit"].forEach(i=>{$(i).textContent="–";$(i).className="v";}); $("sCum").textContent="–"; $("sCum").className="big";
+  }
+  cumChart.data.datasets[0].label=$("legPort").textContent; cumChart.data.datasets[1].label=bench.label;
+  cumChart.data.labels=res?[res.base,...R.map(r=>r.date)]:[];
+  cumChart.data.datasets[0].data=res?[0,...R.map(r=>r.cum)]:[];
+  cumChart.data.datasets[1].data=res&&res.hasB?[0,...R.map(r=>r.bcum)]:[];
+  cumChart.update();
+  dayChart.data.labels=R.map(r=>r.date); dayChart.data.datasets[0].data=R.map(r=>r.r);
+  dayChart.data.datasets[0].backgroundColor=R.map(r=>r.r>=0?css("--gain"):css("--loss")); dayChart.update();
+
+  const items=Object.keys(cur).map(t=>({l:t,v:res?(res.contrib[t]||0):0})).sort((a,b)=>b.v-a.v);
+  attrChart.data.labels=items.map(i=>i.l); attrChart.data.datasets[0].data=items.map(i=>i.v);
+  attrChart.data.datasets[0].backgroundColor=items.map(i=>i.v>=0?css("--gain"):css("--loss")); attrChart.update();
+
+  $("dailyTbl").tBodies[0].innerHTML=R.length?R.slice().reverse().map(r=>{const ex=r.br==null?null:r.r-r.br;
+    return `<tr><td>${r.date}</td><td class="num ${cls(r.r)}">${pct(r.r)}</td><td class="num ${cls(r.br)}">${pct(r.br)}</td><td class="num ${cls(ex)}">${pct(ex)}</td><td class="num ${cls(r.cum)}">${pct(r.cum)}</td></tr>`;}).join("")
+    :`<tr><td colspan="5" class="muted">${T("noData")}</td></tr>`;
+
+  // holdings: one table per basket, weights shown as weight-in-view
+  const head=`<thead><tr><th data-i="ticker">${T("ticker")}</th><th>${T("name")}</th><th>${T("layer")}</th><th class="num">${T("weight")}</th><th class="num">${T("ret")}</th><th class="num">${T("contrib")}</th></tr></thead>`;
+  let html="";
+  for(const k of ["equity","token"]){
+    if(VIEW!=="all"&&VIEW!==k) continue;
+    const ts=Object.keys(P.baskets[k].w).filter(t=>cur[t]).sort((a,b)=>cur[b]-cur[a]);
+    html+=`<h3 class="subh${k==="token"?" tok":""}">${k==="equity"?T("eqBasket"):T("tokBasket")}${VIEW==="all"?` · ${pp(P.combined[k])}`:""}</h3><div class="tbl"><table>${head}<tbody>${ts.map(t=>holdingRow(t,cur[t],res)).join("")}</tbody></table></div>`;
+  }
+  $("holdingsWrap").innerHTML=html;
+
+  $("logTbl").tBodies[0].innerHTML=log.length?log.slice().reverse().map(e=>{
+    const up=e.from!=null&&e.to!=null?e.to>e.from:null;
+    const act=(LANG==="en"?e.action_en:e.action)||(up==null?T("adj"):up?T("add"):T("trim"));
+    const chg=e.from!=null&&e.to!=null?`${pp(e.from)} → ${pp(e.to)}`:"";
+    return `<tr><td>${esc(e.date)}</td><td>${esc(e.ticker||"")}</td><td class="${up==null?"":up?"act-up":"act-down"}">${esc(act)}</td><td class="num">${chg}</td><td class="wrapc">${esc((LANG==="en"?(e.note_en||e.note):e.note)||"")}</td></tr>`;}).join("")
+    :`<tr><td>${esc(BASE_ASOF)}</td><td>${T("all")}</td><td><span class="tag">${T("init")}</span></td><td class="num">${T("initBasket")}</td><td class="wrapc"></td></tr>`;
+}
+
+$("startSel").addEventListener("change",e=>{startDate=e.target.value;render();});
+$("lEn").addEventListener("click",()=>setLang("en"));
+$("lZh").addEventListener("click",()=>setLang("zh"));
+$("vAll").addEventListener("click",()=>setView("all"));
+$("vEq").addEventListener("click",()=>setView("equity"));
+$("vTok").addEventListener("click",()=>setView("token"));
+
+document.addEventListener("mouseenter",e=>{
+  const wrap=e.target.closest&&e.target.closest(".tip-wrap"); if(!wrap) return;
+  const tip=wrap.querySelector(".tip"); if(!tip) return;
+  const rect=wrap.getBoundingClientRect(); const tipH=tip.offsetHeight||220;
+  if(window.innerHeight-rect.bottom-16>=tipH+16){ tip.style.top=(rect.bottom+8)+"px"; tip.style.bottom="auto"; }
+  else { tip.style.bottom=(window.innerHeight-rect.top+8)+"px"; tip.style.top="auto"; }
+  tip.style.left=Math.max(8,Math.min(rect.left,window.innerWidth-480))+"px";
+},true);
+
+(function(){ const el=$("sCum"); let ticking=false;
+  window.addEventListener("scroll",()=>{ if(!ticking){ requestAnimationFrame(()=>{ const y=window.scrollY; el.style.transform=`rotateY(${(y*0.3)%360}deg) rotateX(${Math.sin(y*0.006)*8}deg)`; ticking=false; }); ticking=true; } },{passive:true});
+})();
+
+function animateCumChart(){
+  if(!cumChart||!cumChart.data.labels.length) return;
+  cumChart._revealP=0; cumChart._fillOpacity=0; cumChart.update("none");
+  const dur=1200, fillDur=600, t0=performance.now();
+  (function step(now){ const e=now-t0;
+    if(e<dur){ cumChart._revealP=Math.min(e/dur,1); cumChart.update("none"); requestAnimationFrame(step); }
+    else { cumChart._revealP=1; cumChart.update("none"); const t1=performance.now();
+      (function fade(n2){ const e2=n2-t1; cumChart._fillOpacity=Math.min(e2/fillDur,1); cumChart.update("none"); if(e2<fillDur) requestAnimationFrame(fade); })(performance.now()); }
+  })(performance.now());
+}
+
+applyLang(); makeCharts();
+(async()=>{
+  const [p,f]=await Promise.all([
+    fetch("data/prices.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>({prices:{}})),
+    fetch("data/portfolio.json",{cache:"no-store"}).then(r=>r.json())
+  ]);
+  P=f; prices=p.prices||{}; BASE_ASOF=f.asof||BASE_ASOF;
+  log=(f.log||[]).slice().sort((a,b)=>(a.date+(a.ts||"")).localeCompare(b.date+(b.ts||"")));
+  applyView(); renderStart(); render(); animateCumChart();
+})().catch(e=>console.error(e));
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{
+  "asof": "2026-10-08",
+  "source": {
+    "title": "Breaking The Wall — Has Blockchain Finally Reached Its Moment?",
+    "author": "Citrini Research",
+    "date": "2026-10-08",
+    "url": "https://www.citriniresearch.com/p/breaking-the-wall"
+  },
+  "baskets": {
+    "equity": {
+      "label": { "en": "Equity basket", "zh": "股票篮子" },
+      "bench": { "id": "BITQ", "label": "BITQ" },
+      "w": { "SECZ": 0.22, "COIN": 0.20, "FIGR": 0.16, "CRCL": 0.14, "BLSH": 0.14, "HOOD": 0.14 }
+    },
+    "token": {
+      "label": { "en": "Token basket", "zh": "代币篮子" },
+      "bench": { "id": "BTCETH", "label": "BTC/ETH 50:50", "components": { "BTC": 0.5, "ETH": 0.5 } },
+      "w": { "LIT": 0.30, "DRV": 0.25, "SYRUP": 0.25, "AERO": 0.20 }
+    }
+  },
+  "combined": { "equity": 0.5, "token": 0.5 },
+  "holdings": {
+    "SECZ": {
+      "name": "Securitize", "type": "equity", "layer": { "en": "Issuance & transfer agent", "zh": "发行与过户代理" },
+      "thesis": {
+        "zh": "合规代币化必须经过过户代理（transfer agent），这是监管要求存在、绕不开的收费站。Securitize 是这一层最大、唯一上市的纯标的：SEC 注册过户代理 + broker-dealer/ATS + 投顾 + 基金管理人，代币化 AUM 超 $40 亿（BlackRock、Apollo、KKR）。NYSE 选它做首个数字过户代理，Computershare、Continental 选择合作而非自建。SEC 创新豁免要求代币赋予同等股东权利，把市场推向它已建好的架构。风险：约 $12 已定价为关键基础设施；在位过户代理和交易所都有动机自建。",
+        "en": "Compliant tokenization must pass through a transfer agent — a regulator-mandated toll road. Securitize is the largest and only listed pure play in that layer: SEC-registered transfer agent, broker-dealer/ATS, RIA and fund administrator, with $4B+ tokenized AUM (BlackRock, Apollo, KKR). NYSE picked it as first digital transfer agent; Computershare and Continental chose to partner rather than build. The SEC innovation exemption requires tokens to carry full shareholder rights, pushing the market toward the architecture Securitize already built. Risk: at ~$12 it is already priced as critical infrastructure; incumbents have every incentive to compete."
+      }
+    },
+    "COIN": {
+      "name": "Coinbase", "type": "equity", "layer": { "en": "Chains, rails & distribution", "zh": "链与分发" },
+      "thesis": {
+        "zh": "Crypto winter 掩盖了 Coinbase 从加密交易所向多资产金融基础设施的转型。Base 是稳定币 TVL 最大的以太坊 L2，开发者生态最成熟，B20 标准支持分红、拆股和合规义务（法定原生模式），SEC 豁免是顺风。核心问题：TAM 是否从加密交易扩展到传统经纪和衍生品。风险：价值可能归 Aerodrome、Morpho、Uniswap 而非 COIN。",
+        "en": "The crypto winter is obscuring Coinbase's transition from a crypto exchange into a multi-asset financial infrastructure platform. Base is the Ethereum L2 with the largest stablecoin TVL and the most mature developer ecosystem; its B20 standard supports dividends, splits and compliance (legally native model), and the SEC exemption is a tailwind. Key question: does the TAM expand from crypto trading into conventional brokerage and derivatives? Risk: value may accrue to Aerodrome, Morpho and Uniswap rather than COIN."
+      }
+    },
+    "FIGR": {
+      "name": "Figure Technology", "type": "equity", "layer": { "en": "Programmable debt", "zh": "可编程债务" },
+      "thesis": {
+        "zh": "私募信贷版 Securitize：把抵押贷款、HELOC、私募信贷的所有权登记搬上链，回答\"这笔贷款存不存在、谁持有、是否已质押、留置权归谁\"。股票已是流动市场，私募信贷不是，所以这里痛点更大。2025 年底超 8 万笔贷款依赖其登记，流程从数周压到分钟；收购 Kiavi 是加分项。",
+        "en": "Securitize for private credit: puts the ownership record of mortgages, HELOCs and private credit onchain, answering whether a loan exists, who owns it, whether it is already pledged and who controls the lien. Equities are already liquid; private credit is not, so the pain point is larger. 80,000+ loans relied on it as a registry by end-2025, with a weeks-long process cut to minutes; the Kiavi acquisition is an upside kicker."
+      }
+    },
+    "CRCL": {
+      "name": "Circle", "type": "equity", "layer": { "en": "Stablecoins", "zh": "稳定币" },
+      "thesis": {
+        "zh": "USDC 发行人，收入 = 储备利息 × 流通量。RWA 是新需求来源：买代币化股票、做抵押、结算都要先有链上美元。风险：自建 L1 Arc 表现平淡（估值记零）；银行自发稳定币（SoFiUSD 走 Mastercard 结算）若成趋势，长期 TAM 受侵蚀。",
+        "en": "Issuer of USDC; revenue = reserve yield × float. RWA is a new source of demand: buying tokenized stocks, posting collateral and settling all require onchain dollars first. Risks: its own L1 Arc looks like a flop (valued at zero); if bank-issued stablecoins (SoFiUSD settling over Mastercard) become a trend, long-term TAM erodes."
+      }
+    },
+    "BLSH": {
+      "name": "Bullish", "type": "equity", "layer": { "en": "Issuance & transfer agent", "zh": "发行与过户代理" },
+      "thesis": {
+        "zh": "机构导向的加密交易所，宣布收购 Equiniti（服务近 3,000 家发行人、2,000 万股东的过户代理），凑齐\"受监管交易所 + 代币化技术 + 过户代理\"全链条，覆盖代币化证券的发行、登记、交易。交易未完成，但报告认为时机极好。",
+        "en": "Institution-focused crypto exchange that announced the acquisition of Equiniti (transfer agent for ~3,000 issuers and 20M shareholders), assembling the full stack — regulated exchange, tokenization technology and transfer agent — across issuance, registry and trading of tokenized securities. The deal has not closed, but the timing looks right."
+      }
+    },
+    "HOOD": {
+      "name": "Robinhood", "type": "equity", "layer": { "en": "Chains, rails & distribution", "zh": "链与分发" },
+      "thesis": {
+        "zh": "Robinhood Chain（以太坊 L2）开闸让 Stock Tokens 可组合，是本轮拐点的触发者；最大差异化是现有用户群。链年化手续费约 $3,000 万，对比 Q2 净收入 $13.1 亿尚不显著。Stock Tokens 是债务凭证（无股东权利），被 SEC 豁免排除，不卖美国人。报告态度保留，更看好 Coinbase，故权重最低。",
+        "en": "Robinhood Chain (an Ethereum L2) opened the floodgates by making Stock Tokens composable — the trigger of this inflection — and its edge is a user base nobody else has. Chain fees annualize to ~$30M versus $1.31B Q2 net revenue, not yet material. Stock Tokens are debt instruments without shareholder rights, excluded from the SEC exemption and not sold to US residents. The report is reserved and prefers Coinbase, hence the lowest weight."
+      }
+    },
+    "LIT": {
+      "name": "Lighter", "type": "token", "coingecko": "lighter", "layer": { "en": "Liquidity, markets & derivatives", "zh": "交易与衍生品" },
+      "thesis": {
+        "zh": "zk 架构的永续合约平台：撮合链上可验证、以太坊结算。OI 超 $8 亿，30 日成交约 $550 亿，列有股票、指数、商品、外汇，是 Robinhood Wallet 集成的 perps 提供商。FDV 约 $40 亿，年化收入约 $6,500 万，大部分回购销毁。是赌衍生品蛋糕变大，不是赌取代 Hyperliquid。因 Robinhood 经 Bitstamp 做美国 perps 而下跌，报告视为长期买点。风险：RWA 仅占 OI 10–20%。",
+        "en": "zk-based perps venue: matching is verifiable onchain with Ethereum settlement. $800M+ open interest, ~$55B 30-day volume across equities, indices, commodities and FX; the perps provider integrated into Robinhood Wallet. ~$4B FDV, ~$65M annualized revenue, mostly used for buyback/burn. A bet on the derivatives pie growing, not on displacing Hyperliquid. The sell-off on Robinhood's Bitstamp perps plan is a long-term buying opportunity. Risk: RWAs are only 10–20% of OI."
+      }
+    },
+    "DRV": {
+      "name": "Derive", "type": "token", "coingecko": "derive", "layer": { "en": "Liquidity, markets & derivatives", "zh": "交易与衍生品" },
+      "thesis": {
+        "zh": "链上期权龙头：CLOB + 大宗 RFQ + 组合保证金。期权上链比 perps 难，是护城河。首个 RWA 产品黄金 XAUT 期权表现极好，RWA 将是主要增量。回购 35% 拟升至 50%（约 $220 万/年 vs $3–4 亿流通市值）。主催化剂是 V3（zk 架构，允许任何人接前端）。FDV 约 $6 亿，报告愿长期持有。风险：一个月涨约 150%。",
+        "en": "Leading onchain options protocol by a wide margin: CLOB plus RFQ for blocks, with portfolio margin. Options onchain are far harder than perps, which is the moat. Its first RWA product, XAUT gold options, has done very well; RWAs should be the main incremental driver. Buybacks at 35% of fees rising to 50% (~$2.2M/yr vs $300–400M circulating). Main catalyst is V3 (zk-based, anyone can plug in a frontend). ~$600M FDV; the report is comfortable holding long term. Risk: up ~150% in a month."
+      }
+    },
+    "SYRUP": {
+      "name": "Maple", "type": "token", "coingecko": "syrup", "layer": { "en": "Programmable debt", "zh": "可编程债务" },
+      "thesis": {
+        "zh": "链上信贷管理人：资金进入 syrupUSDC / USDT / USDG 池，投向机构借贷策略。AUM 近 $50 亿 vs FDV 约 $3 亿。报告称 RWA 故事已同时体现在业务和代币上，是信贷桶里最喜欢的标的。风险：信贷管理人的核心风险是坏账。",
+        "en": "An onchain credit manager: capital flows into syrupUSDC / USDT / USDG and is deployed into institutional lending strategies. Nearly $5B AUM against ~$300M FDV. The RWA story is already showing up in both the business and the token — the report's favourite in the credit bucket. Risk: the core risk of any credit manager is defaults."
+      }
+    },
+    "AERO": {
+      "name": "Aerodrome", "type": "token", "coingecko": "aerodrome-finance", "layer": { "en": "Liquidity, markets & derivatives", "zh": "交易与流动性" },
+      "thesis": {
+        "zh": "Base 上最大 DEX，承担 Base 上代币化股票的主要交易量。10 月 21 日与 Velodrome 合并后扩展到 Robinhood Chain、以太坊主网等主要 EVM 链。报告认为扩张的上行未完全定价。高 beta；风险是已经涨了很多、应用层竞争激烈。",
+        "en": "The largest DEX on Base, doing most of the tokenized-equity volume there. Merging with Velodrome on Oct 21 to launch on the premier EVM chains including Robinhood Chain and Ethereum mainnet. The report thinks the upside from that expansion is not fully priced. High beta; risks are a strong run already and intense app-layer competition."
+      }
+    }
+  },
+  "log": []
+}
