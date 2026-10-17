@@ -41,15 +41,18 @@ const CG_BASE = "https://api.coingecko.com/api/v3";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function fetchJSON(url, headers = {}) {
-  const res = await fetch(url, { headers });
-  if (res.status === 429) {
-    await sleep(30000);
-    const retry = await fetch(url, { headers });
-    if (!retry.ok) throw new Error(`HTTP ${retry.status} for ${url}`);
-    return retry.json();
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(url, { headers });
+    if (res.status === 429) {
+      const wait = 30000 + attempt * 15000;
+      console.log(`  429 → retry in ${wait / 1000}s (attempt ${attempt + 1}/4)`);
+      await sleep(wait);
+      continue;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+    return res.json();
   }
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  return res.json();
+  throw new Error(`HTTP 429 after 4 retries for ${url}`);
 }
 
 // ---------- Equities (FMP) ----------
